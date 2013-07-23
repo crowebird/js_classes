@@ -124,4 +124,5 @@ console.log(myAnimal._instanceOf(js_classes)); //true
 console.log(myAnimal._instanceOf(Cat)); //false
 console.log(myCat._instanceOf(Cat)); //true
 console.log(myCat._instanceOf(Animal)); //true
+```
 
