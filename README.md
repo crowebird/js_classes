@@ -21,6 +21,10 @@ var SomeClass = js_classes.extend(function() {
     
     getVar: function() {
       return somePrivateVar;
+    },
+    
+    getVarFormatted: function() {
+      return "\n" + self.getVar() + "\n";
     }
   };
 })
