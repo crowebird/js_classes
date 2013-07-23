@@ -39,7 +39,7 @@ We created a reference variable self so that any of the public methods can be ac
 ### Extending
 When extending, simply call extend on a class that was created with js_class.extend.
 
-Any public method that is overloaded will have access to a _super function which will call the parent function.
+Any public method that is overwritten will have access to a _super function which will call the parent function.
 
 ```javascript
 var Animal = js_classes.extend(function() {
