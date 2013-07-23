@@ -37,7 +37,6 @@ Anything not returned through the json object will be private for the scope of t
 We created a reference variable self so that any of the public methods can be accessed between each other, and can also be accessed by any private methods.
 
 ### Extending
-
 When extending, simply call extend on a class that was created with js_class.extend.
 
 Any public method that is overloaded will have access to a _super function which will call the parent function.
@@ -77,4 +76,52 @@ var Cat = Animal.extend(function() {
 var myCat = new Cat();
 console.log(myCat.makeSound()); //meow
 console.log(myCat.getType()); //cat
+```
+
+_Note that _construct is not a true public method.  Creating an instance will auto call the _construct method for you, and then remove it as a callable function._
+
+### Limitations
+Remember that there are only PUBLIC and PRIVATE methods.  If we took the above example and changed Cat to:
+
+```javascript
+var Cat = Animal.extend(function() {
+  var self;
+  
+  return self = {
+    _construct: function() {
+      this._super('meow', 'cat');
+    },
+    
+    makeSound: function() {
+      return this._super();
+    },
+    
+    getType: function() {
+      return _type;
+    }
+  }
+});
+var myCat = new Cat();
+console.log(myCat.makeSound()); //meow
+console.log(myCat.getType()); //undefined
+```
+
+makeSound will still fire properly since we directly reference the parent function call.  getType however will fail because in the scope of Cat, _type is undefined.
+
+### Instance Of
+Traditional javascript instanceof will not work with my implementation of classes, since an instantiated Class really becomes a reference to a json Object, not the function Class itself.
+
+To fix this, all classes have a method _instanceOf that will allow you to check if an instance is an instanceof some class, or is a subclass of some class.
+
+Using the same Animal, Cat example:
+
+```javascript
+var myAnimal = new Animal();
+var myCat = new Cat();
+
+console.log(myAnimal._instanceOf(Animal)); //true
+console.log(myAnimal._instanceOf(js_classes)); //true
+console.log(myAnimal._instanceOf(Cat)); //false
+console.log(myCat._instanceOf(Cat)); //true
+console.log(myCat._instanceOf(Animal)); //true
 
