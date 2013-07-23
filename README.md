@@ -126,3 +126,5 @@ console.log(myCat._instanceOf(Cat)); //true
 console.log(myCat._instanceOf(Animal)); //true
 ```
 
+_Note that _instanceOf cannot be overwritten_
+
