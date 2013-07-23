@@ -1,5 +1,5 @@
 # js_classes
-## A js function that adds simple class extensibity to javascript without prototyping or requiring any external libraries.
+### A js function that adds simple class extensibity to javascript without prototyping or requiring any external libraries.
 
 I wanted a truer class based experience with javascript, but most of the extensibility scripts out there for JS did not fit what I was looking for, so I created my own.
 
