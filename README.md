@@ -29,4 +29,52 @@ var mySomeClass = new SomeClass(10);
 console.log(mySomeClass.getVar()); //10
 ```
 
+You first call js_classes.extend to a function.  This sets up a class object that can be instantited.
+That function returns a json object which will be the accessable public methods.
+
+Anything not returned through the json object will be private for the scope of the class.
+
+We created a reference variable self so that any of the public methods can be accessed between each other, and can also be accessed by any private methods.
+
+### Extending
+
+When extending, simply call extend on a class that was created with js_class.extend.
+
+Any public method that is overloaded will have access to a _super function which will call the parent function.
+
+```javascript
+var Animal = js_class.extend(function() {
+  var self;
+  var _sound,
+      _type;
+      
+  return self = {
+    _construct: function(sound, type) {
+      _sound = sound || '...';
+      _type = type || 'unknown'
+    },
+    
+    makeSound: function() {
+      return _sound;
+    },
+    
+    getType: function() {
+      return _type;
+    }
+  };
+});
+
+var Cat = Animal.extend(function() {
+  var self;
+  
+  return self = {
+    _construct: function() {
+      this._super('meow', 'cat');
+    }
+  }
+});
+
+var myCat = new Cat();
+console.log(myCat.makeSound()); //meow
+console.log(myCat.getType()); //cat
 
