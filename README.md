@@ -42,7 +42,7 @@ When extending, simply call extend on a class that was created with js_class.ext
 Any public method that is overloaded will have access to a _super function which will call the parent function.
 
 ```javascript
-var Animal = js_class.extend(function() {
+var Animal = js_classes.extend(function() {
   var self;
   var _sound,
       _type;
