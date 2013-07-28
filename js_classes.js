@@ -1,7 +1,7 @@
 /**
  * Michael Crowe (crowebird) - 2013
  * https://github.com/crowebird/js_classes
- * /
+ */
 (function() {
     this.js_classes = function() {};
     var extender = function(_childClass) {
