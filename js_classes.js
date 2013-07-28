@@ -1,3 +1,6 @@
+/**
+ * Michael Crowe (crowebird) - 2013
+ * /
 (function() {
     this.js_classes = function() {};
     var extender = function(_childClass) {
