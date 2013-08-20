@@ -19,13 +19,13 @@
                             return obj;
                         })(_parent[i]);
                     } else {
-                        _child[i] = (function(childObj, parentObj) {
+                        _child[i] = (function(childObj, parentObj, parent) {
                             if (typeof childObj == "function" && typeof parentObj == "function") {
                                 return function() {
-                                    return childObj.apply({ _super: parentObj }, arguments);
+                                    return childObj.apply({ _super: parent }, arguments);
                                 };
                             }
-                        })(_child[i], _parent[i] || null);
+                        })(_child[i], _parent[i] || null, _parent);
                     }
                 }
             }
