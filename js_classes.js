@@ -24,6 +24,8 @@
                                 return function() {
                                     return childObj.apply({ _super: parent }, arguments);
                                 };
+                            } else {
+                                return childObj;
                             }
                         })(_child[i], _parent[i] || null, _parent);
                     }
