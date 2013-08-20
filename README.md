@@ -72,7 +72,7 @@ var Cat = Animal.extend(function() {
   
   return self = {
     _construct: function() {
-      this._super('meow', 'cat');
+      this._super._construct('meow', 'cat');
     }
   }
 });
@@ -93,11 +93,11 @@ var Cat = Animal.extend(function() {
   
   return self = {
     _construct: function() {
-      this._super('meow', 'cat');
+      this._super._construct('meow', 'cat');
     },
     
     makeSound: function() {
-      return this._super();
+      return this._super.makeSound();
     },
     
     getType: function() {
