@@ -13,7 +13,7 @@
             };
         }
         var _name = arguments[0];
-        if (typeof _name !== "string" || !/^[$_A-Z][$_A-Z0-9]*$/i.test(_name)) {
+        if (typeof _name !== "string" || !/^[$_A-Z][$_A-Z0-9]*?(?:[\.][$_A-Z][$_A-Z0-9]*?)*?$/i.test(_name)) {
             throw {
                 name: "Error",
                 message: "Invalid class name, must be a string that represents a valid variable name that will be used as the class name"
