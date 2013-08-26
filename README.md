@@ -54,7 +54,7 @@ When extending, simply call extend on a class that was created with js_class.ext
 Any public method that is overwritten will have access to a _super function which will call the parent function.
 
 ```javascript
-js_classes.extend('Anmial', function() {
+js_classes.extend('Animal', function() {
   var self;
   var _sound,
       _type;
