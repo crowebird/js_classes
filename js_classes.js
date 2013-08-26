@@ -123,7 +123,7 @@
 
             var _this = this;
             _child._instanceOf = function(_Class) {
-                return (_Class === js_classes) || (_this instanceof _Class) || (_parent._instanceOf && _parent._instanceOf(_Class));
+                return ((_Class === js_classes) || (_this instanceof _Class) || (_parent && _parent._instanceOf && _parent._instanceOf(_Class))) ? true : false;
             };
 
             if (_child._construct && _preventConstruct !== js_classes.PREVENTCONSTRUCT) {
