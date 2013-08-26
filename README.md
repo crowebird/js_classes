@@ -176,3 +176,27 @@ var myInstance = new ExtendedTestClass();
 myInstance.myAbstractFunction(); //I have implemented myAbstractFunction
 myInstance.myDefinedFunction(); //1
 ```
+
+###Namespaces
+
+js_classes can also be given a namespace'd name to match PSR-0 compliance for example:
+```javascript
+//Filepath: /root/some/folder/MyClass.js
+js_classes.extend('root.some.folder.MyClass', {abstract: true}, function() {
+  return {
+    someFunction: function abstract(){}
+  };
+});
+```
+```javascript
+//Filepath: /root/some/folder/other/MyClass.js
+root.some.folder.MyClass.extend('root.some.folder.other.MyClass', function() {
+  return {
+    someFunction: function() {
+      return 'Implemented!';
+    }
+  };
+});
+var instance = root.some.folder.other.MyClass();
+instance.someFunction(); //Implemented!
+```
