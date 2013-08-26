@@ -173,6 +173,6 @@ js_classes.extend('ExtendedTestClass', function() {
   };
 });
 var myInstance = new ExtendedTestClass();
-myInstance.myAbstractFunction(); //I have implemented myAstractFunction
+myInstance.myAbstractFunction(); //I have implemented myAbstractFunction
 myInstance.myDefinedFunction(); //1
 ```
