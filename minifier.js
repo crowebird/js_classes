@@ -6,4 +6,4 @@ var ast = jsp.parse(orig_code);
 ast = pro.ast_mangle(ast);
 ast = pro.ast_squeeze(ast);
 var final_code = pro.gen_code(ast);
-console.log(final_code);
+fs.writeFile('js_classes.min.js', final_code);
