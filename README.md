@@ -3,14 +3,14 @@
 
 I wanted a truer class based experience with javascript, but most of the extensibility scripts out there for JS did not fit what I was looking for, so I created my own.
 
-This allows you to extend classes, gives you a constructor that is auto called upon initialization, and gives you access to super for extended classes.
+This allows you to extend classes, gives you a constructor that is auto called upon initialization, and gives you access to super for extended classes (as well as create abstract classes and methods).
 
 Note that there is a limitation with how deep classes work.  There are only PUBLIC and PRIVATE methods, and child classes only have access to parent PUBLIC methods.  There is no PROTECTED.
 
 ## How It Works
 
 ```javascript
-var SomeClass = js_classes.extend(function() {
+js_classes.extend('SomeClass', function() {
   var self;
   var somePrivateVar;
   
@@ -33,12 +33,20 @@ var mySomeClass = new SomeClass(10);
 console.log(mySomeClass.getVar()); //10
 ```
 
-You first call js_classes.extend to a function.  This sets up a class object that can be instantiated.
-That function returns a json object which will be the accessible public methods.
+You call js_classes.extend to create a new class.  js_classes.extend has two ways to be called:
 
-Anything not returned through the json object will be private for the scope of the class.
+```javascript
+js_classes.extend(name, function);
+js_classes.extend(name, options, function);
 
-We created a reference variable self so that any of the public methods can be accessed between each other, and can also be accessed by any private methods.
+//name - the name of the class
+//options - a json object of options for the class
+//function - the callable function that is the class being created.
+```
+
+Function works as a class using javascript scope.  The function returns a json object, these will be the public methods/variables.  Anything meant to be private will be left outside of the json object (see the example above).
+
+The variable `self` allows all the public methods to be accessed from other public methods, and gives the private scope access to the public scope.
 
 ### Extending
 When extending, simply call extend on a class that was created with js_class.extend.
@@ -46,7 +54,7 @@ When extending, simply call extend on a class that was created with js_class.ext
 Any public method that is overwritten will have access to a _super function which will call the parent function.
 
 ```javascript
-var Animal = js_classes.extend(function() {
+js_classes.extend('Anmial', function() {
   var self;
   var _sound,
       _type;
@@ -67,7 +75,7 @@ var Animal = js_classes.extend(function() {
   };
 });
 
-var Cat = Animal.extend(function() {
+Animal.extend('Cat', function() {
   var self;
   
   return self = {
@@ -88,7 +96,7 @@ _Note that _construct is not a true public method.  Creating an instance will au
 Remember that there are only PUBLIC and PRIVATE methods.  If we took the above example and changed Cat to:
 
 ```javascript
-var Cat = Animal.extend(function() {
+Animal.extend('Cat', function() {
   var self;
   
   return self = {
@@ -132,3 +140,39 @@ console.log(myCat._instanceOf(Animal)); //true
 
 _Note that _instanceOf cannot be overwritten_
 
+### Abstract
+Abstract classes can also be created, these are defined by passing the abstract option when creating a class:
+
+```javascript
+js_classes.extend('AbstractTestClass', {abstract: true}, function() {
+  var self;
+  return self = {
+    myAbstractFunction: function abstract() {},
+    myDefinedFunction: function() {
+      return 1;
+    }
+  };
+});
+```
+
+_Abstract classes cannot be instantiated.  Trying to create an instance of them will throw an error._
+
+Notice in the example above we created two public methods:
+  - `myAbstractFunction` which is declared abstract by naming the function `abstract`.  The function must be empty, adding a body to it will throw an error.  Any class that extends this class must implement this function.
+  - `myDefinedFunction` which is a normal public method, any child methods that do not override it will (in this case) return 1
+
+Now if we extended AbstractTestClass, using what we know, we will only have to implement myAstractFunction, otherwise an error will be thrown when we instantiate our new class:
+
+```javascript
+js_classes.extend('ExtendedTestClass', function() {
+  var self;
+  return self = {
+    myAbstractFunction: function () {
+      return 'I have implemented myAbstractFunction'
+    }
+  };
+});
+var myInstance = new ExtendedTestClass();
+myInstance.myAbstractFunction(); //I have implemented myAstractFunction
+myInstance.myDefinedFunction(); //1
+```
