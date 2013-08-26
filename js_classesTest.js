@@ -198,9 +198,9 @@ describe('js_classes javascript class extender', function() {
                 variable: function() {}
             }
         });
-        expect(function() { new ExtendedTypeClass(); }).toThrow('Class ExtendedTypeClass cannot override variable of type number with type function');
+        expect(function() { new ExtendedTypeClass(); }).toThrow('Class ExtendedTypeClass cannot override variable of type object with type function');
     });
-    
+
     it('Should correctly identify js_classes with _instanceOf', function() {
         js_classes.extend('ClassA', function() {});
         ClassA.extend('ClassB', function() {});
@@ -233,5 +233,15 @@ describe('js_classes javascript class extender', function() {
         expect(instanceD._instanceOf(ClassB)).toBeFalsy();
         expect(instanceD._instanceOf(ClassC)).toBeFalsy();
         expect(instanceD._instanceOf(ClassD)).toBeTruthy();
+    });
+
+    it('Should namespace correctly', function() {
+        js_classes.extend('My.Namespaced.ClassName', function() {});
+        expect(My).toBeDefined();
+        expect(My.Namespaced).toBeDefined();
+        expect(My.Namespaced.ClassName).toBeDefined();
+        var instance = new My.Namespaced.ClassName();
+        expect(instance._instanceOf).toBeDefined();
+        expect(instance._instanceOf(js_classes)).toBeTruthy();
     });
 });
