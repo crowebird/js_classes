@@ -177,7 +177,7 @@ myInstance.myAbstractFunction(); //I have implemented myAbstractFunction
 myInstance.myDefinedFunction(); //1
 ```
 
-###Namespaces
+### Namespaces
 
 js_classes can also be given a namespace'd name to match PSR-0 compliance for example:
 ```javascript
