@@ -237,11 +237,22 @@ describe('js_classes javascript class extender', function() {
 
     it('Should namespace correctly', function() {
         js_classes.extend('My.Namespaced.ClassName', function() {});
+        js_classes.extend('My.Namespaced.ClassName2', function() {});
+        My.Namespaced.ClassName.extend('My.Namespaced.ClassName3', function() {});
         expect(My).toBeDefined();
         expect(My.Namespaced).toBeDefined();
         expect(My.Namespaced.ClassName).toBeDefined();
+        expect(My.Namespaced.ClassName2).toBeDefined();
+        expect(My.Namespaced.ClassName3).toBeDefined();
         var instance = new My.Namespaced.ClassName();
         expect(instance._instanceOf).toBeDefined();
         expect(instance._instanceOf(js_classes)).toBeTruthy();
+        var instance2 = new My.Namespaced.ClassName2();
+        expect(instance2._instanceOf).toBeDefined();
+        expect(instance2._instanceOf(js_classes)).toBeTruthy();
+        var instance3 = new My.Namespaced.ClassName3();
+        expect(instance3._instanceOf).toBeDefined();
+        expect(instance3._instanceOf(js_classes)).toBeTruthy();
+        expect(instance3._instanceOf(My.Namespaced.ClassName)).toBeTruthy();
     });
 });
