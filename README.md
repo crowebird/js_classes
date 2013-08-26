@@ -115,7 +115,7 @@ Animal.extend('Cat', function() {
 });
 var myCat = new Cat();
 console.log(myCat.makeSound()); //meow
-console.log(myCat.getType()); //undefined
+console.log(myCat.getType()); //_type is not defined
 ```
 
 makeSound will still fire properly since we directly reference the parent function call.  getType however will fail because in the scope of Cat, _type is undefined.
