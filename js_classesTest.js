@@ -200,4 +200,38 @@ describe('js_classes javascript class extender', function() {
         });
         expect(function() { new ExtendedTypeClass(); }).toThrow('Class ExtendedTypeClass cannot override variable of type number with type function');
     });
+    
+    it('Should correctly identify js_classes with _instanceOf', function() {
+        js_classes.extend('ClassA', function() {});
+        ClassA.extend('ClassB', function() {});
+        ClassB.extend('ClassC', function() {});
+        ClassA.extend('ClassD', function() {});
+
+        var instanceA = new ClassA();
+        var instanceB = new ClassB();
+        var instanceC = new ClassC();
+        var instanceD = new ClassD();
+
+        expect(instanceA._instanceOf(js_classes)).toBeTruthy();
+
+        expect(instanceA._instanceOf(ClassA)).toBeTruthy();
+        expect(instanceA._instanceOf(ClassB)).toBeFalsy();
+        expect(instanceA._instanceOf(ClassC)).toBeFalsy();
+        expect(instanceA._instanceOf(ClassD)).toBeFalsy();
+
+        expect(instanceB._instanceOf(ClassA)).toBeTruthy();
+        expect(instanceB._instanceOf(ClassB)).toBeTruthy();
+        expect(instanceB._instanceOf(ClassC)).toBeFalsy();
+        expect(instanceB._instanceOf(ClassD)).toBeFalsy();
+
+        expect(instanceC._instanceOf(ClassA)).toBeTruthy();
+        expect(instanceC._instanceOf(ClassB)).toBeTruthy();
+        expect(instanceC._instanceOf(ClassC)).toBeTruthy();
+        expect(instanceC._instanceOf(ClassD)).toBeFalsy();
+
+        expect(instanceD._instanceOf(ClassA)).toBeTruthy();
+        expect(instanceD._instanceOf(ClassB)).toBeFalsy();
+        expect(instanceD._instanceOf(ClassC)).toBeFalsy();
+        expect(instanceD._instanceOf(ClassD)).toBeTruthy();
+    });
 });
