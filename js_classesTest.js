@@ -270,5 +270,9 @@ describe('js_classes javascript class extender', function() {
         expect(function() {
             js_classes.extend('TestInstantiateAbstract', [1, 2, 3], function abstract() {});
         }).toThrow('You cannot create an instance of abstract class TestInstantiateAbstract');
+
+        js_classes.extend('TestInstantiate.Namespace', [], function() {
+        });
+        expect(js_classes.instances('TestInstantiate.Namespace')._instanceOf(TestInstantiate.Namespace)).toBeTruthy();
     });
 });
