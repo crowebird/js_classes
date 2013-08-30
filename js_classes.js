@@ -165,7 +165,7 @@
                 _instance._construct.apply(null, _autoInstantiate);
                 delete _instance._construct;
             }
-            _instances[namespace] = _instance;
+            _instances[_name] = _instance;
             return _instance;
         }
     };
