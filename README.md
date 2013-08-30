@@ -37,10 +37,10 @@ You call js_classes.extend to create a new class.  js_classes.extend has two way
 
 ```javascript
 js_classes.extend(name, function);
-js_classes.extend(name, options, function);
+js_classes.extend(name, autoInstantiate, function);
 
 //name - the name of the class
-//options - a json object of options for the class
+//autoInstantiate - an array of arugments to pass to auto instantiate the class when it is created (these are the arguments to pass to the constructor)
 //function - the callable function that is the class being created.
 ```
 
@@ -141,10 +141,10 @@ console.log(myCat._instanceOf(Animal)); //true
 _Note that _instanceOf cannot be overwritten_
 
 ### Abstract
-Abstract classes can also be created, these are defined by passing the abstract option when creating a class:
+Abstract classes can also be created, these are defined by naming the class function as abstract when creating the class:
 
 ```javascript
-js_classes.extend('AbstractTestClass', {abstract: true}, function() {
+js_classes.extend('AbstractTestClass', function abstract() {
   var self;
   return self = {
     myAbstractFunction: function abstract() {},
@@ -182,7 +182,7 @@ myInstance.myDefinedFunction(); //1
 js_classes can also be given a namespace'd name to match PSR-0 compliance for example:
 ```javascript
 //Filepath: /root/some/folder/MyClass.js
-js_classes.extend('root.some.folder.MyClass', {abstract: true}, function() {
+js_classes.extend('root.some.folder.MyClass', function abstract() {
   return {
     someFunction: function abstract(){}
   };
@@ -200,3 +200,37 @@ root.some.folder.MyClass.extend('root.some.folder.other.MyClass', function() {
 var instance = root.some.folder.other.MyClass();
 instance.someFunction(); //Implemented!
 ```
+
+###Auto-Instantiation
+
+Classes can also be immediatley instantiated on creation:
+
+```javascript
+js_classes.extend('MyClass', [], function() {
+});
+
+js_classes.extend('MyClass.WithConstructor', [1, 2, 3], function() {
+  var _add;
+
+  return {
+    _construct: function(a, b, c) {
+      _add = a + b + c;
+    },
+    
+    getAdd: function() {
+      return _add;
+    }
+  };
+});
+```
+In the above example we passed in the optional parameter for Auto-Instantiation.
+
+The Auto-Instantiate parameter is an array, which is the arguments you want to pass to the constructor on class creation.  If you have no arguments to pass to the constructor (or don't have a constructor), simply pass an empty array.
+
+You can access the Auto-Instantiated class by using the js_classes.instances function to get a reference to the instantiated class:
+```javascript
+var myClassInstance = js_classes.instances('MyClass');
+var myClassInstanceConstructor = js_classes.instances('MyClass.WithConstructor');
+myClassInstanceConstructor.getAdd(); // 6
+```
+js_classes.instances will only hold instances of classes Auto-Instantiated.
