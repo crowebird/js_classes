@@ -233,6 +233,6 @@ var myClassInstance = js_classes.instances('MyClass');
 var myClassInstanceConstructor = js_classes.instances('MyClass.WithConstructor');
 myClassInstanceConstructor.getAdd(); // 6
 ```
-js_classes.instances will only hold instances of classes Auto-Instantiated.
-
-_Note that when a class is Auto-Instantiated that js_classes.extend will also return that instance_
+_Note:_
+  - _js_classes.instances will only hold instances of classes Auto-Instantiated._
+  - _When a class is Auto-Instantiated that js_classes.extend will also return that instance_
