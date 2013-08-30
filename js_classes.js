@@ -3,6 +3,7 @@
  * https://github.com/crowebird/js_classes
  */
 (function() {
+    var _instances = {};
     var _window = this;
     _window.js_classes = function() {};
     var extender = function() {
@@ -26,18 +27,22 @@
                 message: "Invalid class function, a js_classes class can only be created by wrapping a function"
             };
         }
-        var _definition = arguments.length == 3 ? arguments[1] : {};
-        if (typeof _definition !== "object") {
+        var _autoInstantiate = arguments.length == 3 ? arguments[1] : false;
+        if (_autoInstantiate !== false && typeof _autoInstantiate !== "object") {
             throw {
                 name: "Error",
-                message: "Invalid class definition, expecting an Object"
+                message: "Invalid class Auto-Instantiate parameter, expecting an Object"
             };
         }
         var _parentClass = this;
+        var _abstract = false;
+        if (_childClass.name == "abstract") {
+            _abstract = true;
+        }
 
         var extendedClass = function(_preventConstruct) {
             if (_preventConstruct !== js_classes.PREVENTCONSTRUCT) {
-                if (_definition.abstract) {
+                if (_abstract) {
                     throw {
                         name: "Error",
                         message: "You cannot create an instance of abstract class " + _name
@@ -114,7 +119,7 @@
                 }
             }
 
-            if (!_definition.abstract && abstractMethods.length > 0) {
+            if (!_abstract && abstractMethods.length > 0) {
                 throw {
                     name: "Error",
                     message: "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")"
@@ -147,7 +152,28 @@
                 reference = reference[namespace[i]];
             }
         }
+
+        if (_autoInstantiate) {
+            if (_abstract) {
+                throw {
+                    name: "Error",
+                    message: "You cannot create an instance of abstract class " + _name
+                };
+            }
+            var _instance = new extendedClass(js_classes.PREVENTCONSTRUCT);
+            if (_instance._construct) {
+                _instance._construct.apply(null, _autoInstantiate);
+                delete _instance._construct;
+            }
+            _instances[namespace] = _instance;
+        }
     };
     js_classes.extend = extender;
+    js_classes.instances = function(_instance) {
+        if (_instances[_instance]) {
+            return _instances[_instance];
+        }
+        return false;
+    };
     js_classes.PREVENTCONSTRUCT = 'ED7352BC-BDDD-45BA-B0B5-3577A355665A-05A4367A-7CD1-4B54-91B0-F2DA44D4871A';
 })();
