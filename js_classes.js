@@ -166,6 +166,7 @@
                 delete _instance._construct;
             }
             _instances[namespace] = _instance;
+            return _instance;
         }
     };
     js_classes.extend = extender;
