@@ -258,13 +258,14 @@ describe('js_classes javascript class extender', function() {
 
     it('Should properly auto create an instance of the class when specified, with the given arguments', function() {
         var constructSpy = jasmine.createSpy('_construct');
-        js_classes.extend('TestInstantiate', [1, 2, 3], function() {
+        var getInstance = js_classes.extend('TestInstantiate', [1, 2, 3], function() {
             return {
                 _construct: constructSpy
             }
         });
         expect(constructSpy).toHaveBeenCalledWith(1, 2, 3);
         expect(js_classes.instances('TestInstantiate')).toBeTruthy();
+        expect(getInstance).toBe(js_classes.instances('TestInstantiate'));
 
         expect(function() {
             js_classes.extend('TestInstantiateAbstract', [1, 2, 3], function abstract() {});
