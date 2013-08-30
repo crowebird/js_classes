@@ -5,7 +5,7 @@ I wanted a truer class based experience with javascript, but most of the extensi
 
 This allows you to __extend classes__, gives you a __constructor that is auto called upon instantiaion__, and gives you __access to super for extended classes__ (as well as create __abstract classes and methods__).
 
-Note that there is a limitation with how deep classes work.  There are only PUBLIC and PRIVATE methods, and child classes only have access to parent PUBLIC methods.  There is no PROTECTED.
+_Note There are only PUBLIC and PRIVATE methods, and child classes only have access to parent PUBLIC methods.  There is no PROTECTED._
 
 ## How It Works
 
