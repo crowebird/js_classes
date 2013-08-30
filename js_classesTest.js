@@ -23,7 +23,7 @@ describe('js_classes javascript class extender', function() {
         expect(function() { js_classes.extend('1TestClass'); }).toThrow("Invalid class name, must be a string that represents a valid variable name that will be used as the class name");
         expect(function() { js_classes.extend('1Test@Class'); }).toThrow("Invalid class name, must be a string that represents a valid variable name that will be used as the class name");
         expect(function() { js_classes.extend('TestClass', ''); }).toThrow("Invalid class function, a js_classes class can only be created by wrapping a function");
-        expect(function() { js_classes.extend('TestClass', '', function() {}); }).toThrow("Invalid class definition, expecting an Object");
+        expect(function() { js_classes.extend('TestClass', '', function() {}); }).toThrow("Invalid class Auto-Instantiate parameter, expecting an Object");
         expect(function() { js_classes.extend('TestClass', function() {}); }).not.toThrow();
         expect(function() { js_classes.extend('TestClass', {}, function() {}); }).not.toThrow();
     });
@@ -103,13 +103,13 @@ describe('js_classes javascript class extender', function() {
 
     it('Should handle abstract classes properly', function() {
         //Check that abstract class cannot be instantiated but the extended class can be
-        js_classes.extend('AbstractTestClass', {abstract: true}, function() {});
+        js_classes.extend('AbstractTestClass', function abstract() {});
         expect(function() { new AbstractTestClass() }).toThrow('You cannot create an instance of abstract class AbstractTestClass');
         AbstractTestClass.extend('ExtendedClass', function() {});
         expect(function() { new ExtendedClass() }).not.toThrow();
 
         //Check that an abstract class with an abstract method cannot have a body
-        js_classes.extend('AbstractBadMethodClass', {abstract: true}, function() {
+        js_classes.extend('AbstractBadMethodClass', function abstract() {
             return {
                 someFunction: function abstract() { return 1; }
             };
@@ -126,7 +126,7 @@ describe('js_classes javascript class extender', function() {
         expect(function() { new NotDefinedAbstractClass(); }).toThrow('Class NotDefinedAbstractClass contains 1 abstract method and must be declared abstract or have those methods implemented (someFunction)');
 
         //Check that extended class needs to implement the abstract methods
-        js_classes.extend('AbstractClass', {abstract: true}, function() {
+        js_classes.extend('AbstractClass', function abstract() {
             return {
                 someFunction: function abstract(){}
             };
@@ -141,12 +141,12 @@ describe('js_classes javascript class extender', function() {
         expect(function() { new ExtendClassGood(); }).not.toThrow();
 
         //Check that nested abstraction works
-        js_classes.extend('BaseAbstractClass', {abstract: true}, function() {
+        js_classes.extend('BaseAbstractClass', function abstract() {
             return {
                 someFunction: function abstract(){}
             };
         });
-        BaseAbstractClass.extend('ExtendedAbstractClass', {abstract: true}, function() {
+        BaseAbstractClass.extend('ExtendedAbstractClass', function abstract() {
             return {
                 someFunction2: function abstract(){}
             };
@@ -168,7 +168,7 @@ describe('js_classes javascript class extender', function() {
         expect(function() { new FinalClassGood(); }).not.toThrow();
 
         //Check that implemented abstract methods must match argument count
-        js_classes.extend('BaseAbstractClassArgs', {abstract: true}, function() {
+        js_classes.extend('BaseAbstractClassArgs', function abstract() {
             return {
                 someFunction: function abstract(arg1, arg2) {}
             }
@@ -254,5 +254,20 @@ describe('js_classes javascript class extender', function() {
         expect(instance3._instanceOf).toBeDefined();
         expect(instance3._instanceOf(js_classes)).toBeTruthy();
         expect(instance3._instanceOf(My.Namespaced.ClassName)).toBeTruthy();
+    });
+
+    it('Should properly auto create an instance of the class when specified, with the given arguments', function() {
+        var constructSpy = jasmine.createSpy('_construct');
+        js_classes.extend('TestInstantiate', [1, 2, 3], function() {
+            return {
+                _construct: constructSpy
+            }
+        });
+        expect(constructSpy).toHaveBeenCalledWith(1, 2, 3);
+        expect(js_classes.instances('TestInstantiate')).toBeTruthy();
+
+        expect(function() {
+            js_classes.extend('TestInstantiateAbstract', [1, 2, 3], function abstract() {});
+        }).toThrow('You cannot create an instance of abstract class TestInstantiateAbstract');
     });
 });
