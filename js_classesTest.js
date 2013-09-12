@@ -25,7 +25,7 @@ describe('js_classes javascript class extender', function() {
         expect(function() { js_classes.extend('TestClass', ''); }).toThrow("Invalid class function, a js_classes class can only be created by wrapping a function");
         expect(function() { js_classes.extend('TestClass', '', function() {}); }).toThrow("Invalid class Auto-Instantiate parameter, expecting an Object");
         expect(function() { js_classes.extend('TestClass', function() {}); }).not.toThrow();
-        expect(function() { js_classes.extend('TestClass', {}, function() {}); }).not.toThrow();
+        expect(function() { js_classes.extend('TestClass2', {}, function() {}); }).not.toThrow();
     });
 
     it('Should call constructor on instantiation and constructor should not be accessible as a method', function() {
@@ -239,6 +239,7 @@ describe('js_classes javascript class extender', function() {
         js_classes.extend('My.Namespaced.ClassName', function() {});
         js_classes.extend('My.Namespaced.ClassName2', function() {});
         My.Namespaced.ClassName.extend('My.Namespaced.ClassName3', function() {});
+		js_classes.extend('My', function() {});
         expect(My).toBeDefined();
         expect(My.Namespaced).toBeDefined();
         expect(My.Namespaced.ClassName).toBeDefined();
@@ -255,6 +256,15 @@ describe('js_classes javascript class extender', function() {
         expect(instance3._instanceOf(js_classes)).toBeTruthy();
         expect(instance3._instanceOf(My.Namespaced.ClassName)).toBeTruthy();
     });
+
+	it('Should not allow a class to be redeclared', function() {
+		expect(function() { js_classes.extend('MyTestClass', function() {}); }).not.toThrow();
+		expect(function() { js_classes.extend('MyTestClass', function() {}); }).toThrow('Cannot redeclare class MyTestClass');
+		expect(function() { js_classes.extend('MyTestClass.Extended', function() {}); }).not.toThrow();
+		expect(function() { js_classes.extend('MyTestClass.Extended', function() {}); }).toThrow('Cannot redeclare class MyTestClass.Extended');
+		expect(function() { js_classes.extend('SomeOtherClass.Extended', function() {}); }).not.toThrow();
+		expect(function() { js_classes.extend('MyTestClass.Extended.Another', function() {}); }).not.toThrow();
+	});
 
     it('Should properly auto create an instance of the class when specified, with the given arguments', function() {
         var constructSpy = jasmine.createSpy('_construct');
