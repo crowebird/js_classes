@@ -20,6 +20,7 @@
                 message: "Invalid class name, must be a string that represents a valid variable name that will be used as the class name"
             };
         }
+		var namespace = _name.split(/\./);
         var _childClass = arguments[arguments.length == 3 ? 2 : 1];
         if (typeof _childClass !== "function") {
             throw {
@@ -34,6 +35,22 @@
                 message: "Invalid class Auto-Instantiate parameter, expecting an Object"
             };
         }
+		var reference = _window;
+		for(var i = 0; i < namespace.length; ++i) {
+			if (!reference[namespace[i]]) {
+				break;
+			}
+			if (i == namespace.length - 1) {
+				if (reference[namespace[i]] && reference[namespace[i]].js_classes && reference[namespace[i]].js_classes.IDENT == js_classes.IDENT) {
+					throw {
+						name: "Error",
+						message: "Cannot redeclare class " + _name
+					};
+				}
+			} else {
+				reference = reference[namespace[i]];
+			}
+		}
         var _parentClass = this;
         var _abstract = false;
         if (_childClass.name == "abstract") {
@@ -138,20 +155,29 @@
 
             return _child;
         }
-        extendedClass.extend = extender;
 
-        var namespace = _name.split(/\./);
-        var reference = _window;
-        for(var i = 0; i < namespace.length; ++i) {
+		reference = _window;
+        for(i = 0; i < namespace.length; ++i) {
             if (!reference[namespace[i]]) {
                 reference[namespace[i]] = {};
             }
             if (i == namespace.length - 1) {
+				for(var j in reference[namespace[i]]) {
+					if (reference[namespace[i]].hasOwnProperty(j)) {
+						extendedClass[j] = reference[namespace[i]][j];
+					}
+				}
                 reference[namespace[i]] = extendedClass;
             } else {
                 reference = reference[namespace[i]];
             }
         }
+
+		extendedClass.extend = extender;
+		extendedClass.js_classes = {
+			CREATED: new Date(),
+			IDENT: js_classes.IDENT
+		};
 
         if (_autoInstantiate) {
             if (_abstract) {
@@ -177,4 +203,5 @@
         return false;
     };
     js_classes.PREVENTCONSTRUCT = 'ED7352BC-BDDD-45BA-B0B5-3577A355665A-05A4367A-7CD1-4B54-91B0-F2DA44D4871A';
+	js_classes.IDENT = '6931988F-786C-48A0-8A45-7C2D8A05A766DEAC069B-C752-4669-B956-E6D24DF3B87A';
 })();
