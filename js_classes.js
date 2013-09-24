@@ -2,9 +2,8 @@
  * Michael Crowe (crowebird - www.crowebird.com) - 2013
  * https://github.com/crowebird/js_classes
  */
-(function() {
+(function(_window) { "use strict";
     var _instances = {};
-    var _window = this;
     _window.js_classes = function() {};
     var extender = function() {
         if (arguments.length > 3 || arguments.length == 0) {
@@ -204,4 +203,4 @@
     };
     js_classes.PREVENTCONSTRUCT = 'ED7352BC-BDDD-45BA-B0B5-3577A355665A-05A4367A-7CD1-4B54-91B0-F2DA44D4871A';
 	js_classes.IDENT = '6931988F-786C-48A0-8A45-7C2D8A05A766DEAC069B-C752-4669-B956-E6D24DF3B87A';
-})();
+})(window);
