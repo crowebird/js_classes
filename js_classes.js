@@ -7,32 +7,20 @@
     _window.js_classes = function() {};
     var extender = function() {
         if (arguments.length > 3 || arguments.length == 0) {
-            throw {
-                name: "Error",
-                message: "Invalid class declaration, invalid number of arguments"
-            };
+            throw "Invalid class declaration, invalid number of arguments";
         }
         var _name = arguments[0];
         if (typeof _name !== "string" || !/^[$_A-Z][$_A-Z0-9]*?(?:[\.][$_A-Z][$_A-Z0-9]*?)*?$/i.test(_name)) {
-            throw {
-                name: "Error",
-                message: "Invalid class name, must be a string that represents a valid variable name that will be used as the class name"
-            };
+            throw "Invalid class name, must be a string that represents a valid variable name that will be used as the class name";
         }
 		var namespace = _name.split(/\./);
         var _childClass = arguments[arguments.length == 3 ? 2 : 1];
         if (typeof _childClass !== "function") {
-            throw {
-                name: "Error",
-                message: "Invalid class function, a js_classes class can only be created by wrapping a function"
-            };
+            throw "Invalid class function, a js_classes class can only be created by wrapping a function";
         }
         var _autoInstantiate = arguments.length == 3 ? arguments[1] : false;
         if (_autoInstantiate !== false && typeof _autoInstantiate !== "object") {
-            throw {
-                name: "Error",
-                message: "Invalid class Auto-Instantiate parameter, expecting an Object"
-            };
+            throw "Invalid class Auto-Instantiate parameter, expecting an Object";
         }
 		var reference = _window;
 		for(var i = 0; i < namespace.length; ++i) {
@@ -41,10 +29,7 @@
 			}
 			if (i == namespace.length - 1) {
 				if (reference[namespace[i]] && reference[namespace[i]].js_classes && reference[namespace[i]].js_classes.IDENT == js_classes.IDENT) {
-					throw {
-						name: "Error",
-						message: "Cannot redeclare class " + _name
-					};
+					throw "Cannot redeclare class " + _name;
 				}
 			} else {
 				reference = reference[namespace[i]];
@@ -59,10 +44,7 @@
         var extendedClass = function(_preventConstruct) {
             if (_preventConstruct !== js_classes.PREVENTCONSTRUCT) {
                 if (_abstract) {
-                    throw {
-                        name: "Error",
-                        message: "You cannot create an instance of abstract class " + _name
-                    };
+                    throw "You cannot create an instance of abstract class " + _name;
                 }
             }
 
@@ -84,17 +66,11 @@
                         } else {
                             _child[i] = (function(_i, childObj, parentObj, parent) {
                                 if (typeof childObj != typeof parentObj) {
-                                    throw {
-                                        name: "Error",
-                                        message: "Class " + _name + " cannot override " + _i + " of type "  + (typeof parentObj) + " with type " + (typeof childObj)
-                                    }
+                                    throw "Class " + _name + " cannot override " + _i + " of type "  + (typeof parentObj) + " with type " + (typeof childObj);
                                 }
                                 if (typeof childObj == "function") {
                                     if (parentObj.abstract && parentObj.definedArguments != childObj.length) {
-                                        throw {
-                                            name: "Error",
-                                            message: "Declaration of " + _name + "::" + i + " must be compatible with " + parentObj.className + "::" + _i
-                                        }
+                                        throw "Declaration of " + _name + "::" + i + " must be compatible with " + parentObj.className + "::" + _i;
                                     }
                                     return function() {
                                         return childObj.apply({ _super: parent }, arguments);
@@ -117,10 +93,7 @@
                                 var childObjStr = String(childObj);
                                 childObjStr = childObjStr.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
                                 if (!/^function abstract\(.*?\)\s*?{\s*?\}/m.test(String(childObjStr))) {
-                                    throw {
-                                        name: "Error",
-                                        message: "Abstract function " + _name + "::" + i + " cannot contain a body"
-                                    }
+                                    throw "Abstract function " + _name + "::" + i + " cannot contain a body";
                                 }
                             }
                             var _return = function() {
@@ -136,10 +109,7 @@
             }
 
             if (!_abstract && abstractMethods.length > 0) {
-                throw {
-                    name: "Error",
-                    message: "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")"
-                }
+                throw "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")";
             }
 
             var _this = this;
@@ -180,10 +150,7 @@
 
         if (_autoInstantiate) {
             if (_abstract) {
-                throw {
-                    name: "Error",
-                    message: "You cannot create an instance of abstract class " + _name
-                };
+                throw "You cannot create an instance of abstract class " + _name;
             }
             var _instance = new extendedClass(js_classes.PREVENTCONSTRUCT);
             if (_instance._construct) {
