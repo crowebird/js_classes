@@ -161,7 +161,7 @@ Notice in the example above we created two public methods:
   - `myAbstractFunction` which is declared abstract by naming the function `abstract`.  The function must be empty, adding a body to it will throw an error.  Any class that extends this class must implement this function.
   - `myDefinedFunction` which is a normal public method, any child methods that do not override it will (in this case) return 1
 
-Now if we extended AbstractTestClass, using what we know, we will only have to implement myAstractFunction, otherwise an error will be thrown when we instantiate our new class:
+Now if we extended AbstractTestClass, using what we know, we will only have to implement myAbstractFunction, otherwise an error will be thrown when we instantiate our new class:
 
 ```javascript
 AbstractTestClass.extend('ExtendedTestClass', function() {
