@@ -164,7 +164,7 @@ Notice in the example above we created two public methods:
 Now if we extended AbstractTestClass, using what we know, we will only have to implement myAstractFunction, otherwise an error will be thrown when we instantiate our new class:
 
 ```javascript
-js_classes.extend('ExtendedTestClass', function() {
+AbstractTestClass.extend('ExtendedTestClass', function() {
   var self;
   return self = {
     myAbstractFunction: function () {
