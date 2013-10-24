@@ -23,9 +23,7 @@ describe('js_classes javascript class extender', function() {
         expect(function() { js_classes.extend('1TestClass'); }).toThrow("Invalid class name, must be a string that represents a valid variable name that will be used as the class name");
         expect(function() { js_classes.extend('1Test@Class'); }).toThrow("Invalid class name, must be a string that represents a valid variable name that will be used as the class name");
         expect(function() { js_classes.extend('TestClass', ''); }).toThrow("Invalid class function, a js_classes class can only be created by wrapping a function");
-        expect(function() { js_classes.extend('TestClass', '', function() {}); }).toThrow("Invalid class Auto-Instantiate parameter, expecting an Object");
         expect(function() { js_classes.extend('TestClass', function() {}); }).not.toThrow();
-        expect(function() { js_classes.extend('TestClass2', {}, function() {}); }).not.toThrow();
     });
 
     it('Should call constructor on instantiation and constructor should not be accessible as a method', function() {
@@ -265,24 +263,4 @@ describe('js_classes javascript class extender', function() {
 		expect(function() { js_classes.extend('SomeOtherClass.Extended', function() {}); }).not.toThrow();
 		expect(function() { js_classes.extend('MyTestClass.Extended.Another', function() {}); }).not.toThrow();
 	});
-
-    it('Should properly auto create an instance of the class when specified, with the given arguments', function() {
-        var constructSpy = jasmine.createSpy('_construct');
-        var getInstance = js_classes.extend('TestInstantiate', [1, 2, 3], function() {
-            return {
-                _construct: constructSpy
-            }
-        });
-        expect(constructSpy).toHaveBeenCalledWith(1, 2, 3);
-        expect(js_classes.instances('TestInstantiate')).toBeTruthy();
-        expect(getInstance).toBe(js_classes.instances('TestInstantiate'));
-
-        expect(function() {
-            js_classes.extend('TestInstantiateAbstract', [1, 2, 3], function abstract() {});
-        }).toThrow('You cannot create an instance of abstract class TestInstantiateAbstract');
-
-        js_classes.extend('TestInstantiate.Namespace', [], function() {
-        });
-        expect(js_classes.instances('TestInstantiate.Namespace')._instanceOf(TestInstantiate.Namespace)).toBeTruthy();
-    });
 });
