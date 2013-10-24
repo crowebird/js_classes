@@ -37,10 +37,8 @@ You call js_classes.extend to create a new class.  js_classes.extend has two way
 
 ```javascript
 js_classes.extend(name, function);
-js_classes.extend(name, autoInstantiate, function);
 
 //name - the name of the class
-//autoInstantiate - an array of arugments to pass to auto instantiate the class when it is created (these are the arguments to pass to the constructor)
 //function - the callable function that is the class being created.
 ```
 
