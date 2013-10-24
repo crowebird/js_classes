@@ -1,4 +1,4 @@
-# js_classes (v1.1)
+# js_classes (v1.1.1)
 ### A js function that adds simple class extensibility to javascript without prototyping or requiring any external libraries.
 
 I wanted a truer class based experience with javascript, but most of the extensibility scripts out there for JS did not fit what I was looking for, so I created my own.
@@ -200,39 +200,3 @@ root.some.folder.MyClass.extend('root.some.folder.other.MyClass', function() {
 var instance = root.some.folder.other.MyClass();
 instance.someFunction(); //Implemented!
 ```
-
-###Auto-Instantiation
-
-Classes can also be immediatley instantiated on creation:
-
-```javascript
-var myClassInstance = js_classes.extend('MyClass', [], function() {
-});
-
-js_classes.extend('MyClass.WithConstructor', [1, 2, 3], function() {
-  var _add;
-
-  return {
-    _construct: function(a, b, c) {
-      _add = a + b + c;
-    },
-    
-    getAdd: function() {
-      return _add;
-    }
-  };
-});
-```
-In the above example we passed in the optional parameter for Auto-Instantiation.
-
-The Auto-Instantiate parameter is an array, which is the arguments you want to pass to the constructor on class creation.  If you have no arguments to pass to the constructor (or don't have a constructor), simply pass an empty array.
-
-You can access the Auto-Instantiated class after the fact by using the js_classes.instances function to get a reference to the instantiated class:
-```javascript
-var myClassInstance = js_classes.instances('MyClass');
-var myClassInstanceConstructor = js_classes.instances('MyClass.WithConstructor');
-myClassInstanceConstructor.getAdd(); // 6
-```
-_Note:_
-  - _js_classes.instances will only hold instances of classes Auto-Instantiated._
-  - _When a class is Auto-Instantiated that js_classes.extend will also return that instance_
