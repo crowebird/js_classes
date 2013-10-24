@@ -3,8 +3,8 @@
  * https://github.com/crowebird/js_classes
  */
 (function(_window) { "use strict";
-    var _instances = {};
     _window.js_classes = function() {};
+
     var extender = function() {
         if (arguments.length > 3 || arguments.length == 0) {
             throw "Invalid class declaration, invalid number of arguments";
@@ -14,13 +14,9 @@
             throw "Invalid class name, must be a string that represents a valid variable name that will be used as the class name";
         }
 		var namespace = _name.split(/\./);
-        var _childClass = arguments[arguments.length == 3 ? 2 : 1];
+        var _childClass = arguments[1];
         if (typeof _childClass !== "function") {
             throw "Invalid class function, a js_classes class can only be created by wrapping a function";
-        }
-        var _autoInstantiate = arguments.length == 3 ? arguments[1] : false;
-        if (_autoInstantiate !== false && typeof _autoInstantiate !== "object") {
-            throw "Invalid class Auto-Instantiate parameter, expecting an Object";
         }
 		var reference = _window;
 		for(var i = 0; i < namespace.length; ++i) {
@@ -148,26 +144,10 @@
 			IDENT: js_classes.IDENT
 		};
 
-        if (_autoInstantiate) {
-            if (_abstract) {
-                throw "You cannot create an instance of abstract class " + _name;
-            }
-            var _instance = new extendedClass(js_classes.PREVENTCONSTRUCT);
-            if (_instance._construct) {
-                _instance._construct.apply(null, _autoInstantiate);
-                delete _instance._construct;
-            }
-            _instances[_name] = _instance;
-            return _instance;
-        }
+		return js_classes;
     };
     js_classes.extend = extender;
-    js_classes.instances = function(_instance) {
-        if (_instances[_instance]) {
-            return _instances[_instance];
-        }
-        return false;
-    };
+	js_classes.DEFERRED = 'DECFD87C-9CE6-4B57-BDB1-FC704D701EE52A19E938-4774-404F-BD52-2066CA4192DE';
     js_classes.PREVENTCONSTRUCT = 'ED7352BC-BDDD-45BA-B0B5-3577A355665A-05A4367A-7CD1-4B54-91B0-F2DA44D4871A';
 	js_classes.IDENT = '6931988F-786C-48A0-8A45-7C2D8A05A766DEAC069B-C752-4669-B956-E6D24DF3B87A';
 })(window);
