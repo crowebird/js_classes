@@ -73,30 +73,42 @@ describe('js_classes javascript class extender', function() {
         var methodASpy = jasmine.createSpy('methodA');
         var methodBSpy = jasmine.createSpy('methodB');
         var methodCSpy = jasmine.createSpy('methodC');
+        var methodDSpy = jasmine.createSpy('methodD');
+        var methodESpy = jasmine.createSpy('methodE');
         js_classes.extend('TestClass', function() {
             return {
                 methodA: methodASpy,
                 methodB: methodBSpy,
-                methodC: methodCSpy
+                methodC: methodCSpy,
+				methodD: methodDSpy,
+				methodE: methodESpy
             }
         });
         TestClass.extend('TestClassExtended', function() {
-            return {
+			var self;
+            return self = {
                 childMethodA: function() {
-                    this._super.methodA();
+					self._super.methodA();
                 },
                 childMethodB_C: function() {
-                    this._super.methodB();
-                    this._super.methodC();
-                }
+					self._super.methodB();
+					self._super.methodC();
+                },
+				methodD: function() {
+					self._super.methodD();
+				}
             }
         });
         var instance = new TestClassExtended();
         instance.childMethodA();
         instance.childMethodB_C();
+		instance.methodD();
+		instance.methodE();
         expect(methodASpy).toHaveBeenCalled();
         expect(methodBSpy).toHaveBeenCalled();
         expect(methodCSpy).toHaveBeenCalled();
+		expect(methodDSpy).toHaveBeenCalled();
+		expect(methodESpy).toHaveBeenCalled();
     });
 
     it('Should handle abstract classes properly', function() {
