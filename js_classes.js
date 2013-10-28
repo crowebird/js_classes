@@ -68,9 +68,7 @@
                                     if (parentObj.abstract && parentObj.definedArguments != childObj.length) {
                                         throw "Declaration of " + _name + "::" + i + " must be compatible with " + parentObj.className + "::" + _i;
                                     }
-                                    return function() {
-                                        return childObj.apply({ _super: parent }, arguments);
-                                    };
+                                    return childObj;
                                 } else {
                                     return childObj;
                                 }
@@ -92,9 +90,7 @@
                                     throw "Abstract function " + _name + "::" + i + " cannot contain a body";
                                 }
                             }
-                            var _return = function() {
-                                return childObj.apply(_parent ? { _super: parent } : null, arguments);
-                            };
+                            var _return = childObj;
                             _return.abstract = childObj.name == "abstract";
                             _return.definedArguments = childObj.length;
                             _return.className = _name;
@@ -103,6 +99,8 @@
                     }
                 }
             }
+
+			if (_parent) { _child._super = _parent; }
 
             if (!_abstract && abstractMethods.length > 0) {
                 throw "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")";
