@@ -46,12 +46,16 @@
 
             var abstractMethods = [];
 
+			var _super = {};
             var _child = new _childClass();
             var _parent = null;
             if (_parentClass !== _window.js_classes) {
                 _parent = new _parentClass(js_classes.PREVENTCONSTRUCT);
                 for(var i in _parent) {
                     if (_parent.hasOwnProperty(i)) {
+						_super[i] = function(_p) {
+							return _p;
+						}(_parent[i]);
                         if (!_child[i]) {
                             _child[i] = (function(_i, parentObj) {
                                 if (parentObj.abstract) {
@@ -60,7 +64,7 @@
                                 return parentObj;
                             })(i, _parent[i]);
                         } else {
-                            _child[i] = (function(_i, childObj, parentObj, parent) {
+                            _child[i] = (function(_i, childObj, parentObj) {
                                 if (typeof childObj != typeof parentObj) {
                                     throw "Class " + _name + " cannot override " + _i + " of type "  + (typeof parentObj) + " with type " + (typeof childObj);
                                 }
@@ -68,11 +72,10 @@
                                     if (parentObj.abstract && parentObj.definedArguments != childObj.length) {
                                         throw "Declaration of " + _name + "::" + i + " must be compatible with " + parentObj.className + "::" + _i;
                                     }
-                                    return childObj;
-                                } else {
-                                    return childObj;
                                 }
-                            })(i, _child[i], _parent[i], _parent);
+								return childObj;
+                            })(i, _child[i], _parent[i]);
+							_parent[i] = _child[i];
                         }
                     }
                 }
@@ -80,27 +83,28 @@
 
             for (var i in _child) {
                 if (_child.hasOwnProperty(i)) {
-                    if (typeof _child[i] == "function" && (_parent == null || (_parent != null && !_parent[i]))) {
-                        _child[i] = (function(_i, childObj, parent) {
-                            if (childObj.name == "abstract") {
-                                abstractMethods.push(_i);
-                                var childObjStr = String(childObj);
-                                childObjStr = childObjStr.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
-                                if (!/^function abstract\(.*?\)\s*?{\s*?\}/m.test(String(childObjStr))) {
-                                    throw "Abstract function " + _name + "::" + i + " cannot contain a body";
-                                }
-                            }
-                            var _return = childObj;
-                            _return.abstract = childObj.name == "abstract";
-                            _return.definedArguments = childObj.length;
-                            _return.className = _name;
-                            return _return;
-                        })(i, _child[i], _parent);
+                    if (typeof _child[i] == "function") {
+						if (_parent == null || (_parent != null && !_parent[i])) {
+							_child[i] = (function(_i, childObj) {
+								if (childObj.name == "abstract") {
+									abstractMethods.push(_i);
+									var childObjStr = String(childObj);
+									childObjStr = childObjStr.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
+									if (!/^function abstract\(.*?\)\s*?{\s*?\}/m.test(String(childObjStr))) {
+										throw "Abstract function " + _name + "::" + i + " cannot contain a body";
+									}
+								}
+								childObj.abstract = childObj.name == "abstract";
+								childObj.definedArguments = childObj.length;
+								childObj.className = _name;
+								return childObj;
+							})(i, _child[i]);
+						}
                     }
                 }
             }
 
-			if (_parent) { _child._super = _parent; }
+			if (_parent) { _child._super = _super }
 
             if (!_abstract && abstractMethods.length > 0) {
                 throw "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")";
@@ -145,7 +149,6 @@
 		return js_classes;
     };
     js_classes.extend = extender;
-	js_classes.DEFERRED = 'DECFD87C-9CE6-4B57-BDB1-FC704D701EE52A19E938-4774-404F-BD52-2066CA4192DE';
     js_classes.PREVENTCONSTRUCT = 'ED7352BC-BDDD-45BA-B0B5-3577A355665A-05A4367A-7CD1-4B54-91B0-F2DA44D4871A';
 	js_classes.IDENT = '6931988F-786C-48A0-8A45-7C2D8A05A766DEAC069B-C752-4669-B956-E6D24DF3B87A';
 })(window);
