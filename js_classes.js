@@ -40,7 +40,7 @@
         var extendedClass = function(_preventConstruct) {
             if (_preventConstruct !== js_classes.PREVENTCONSTRUCT) {
                 if (_abstract) {
-                    throw "You cannot create an instance of abstract class " + _name;
+                    throw "You cannot create an instance of an abstract class " + _name;
                 }
             }
 
@@ -48,7 +48,43 @@
 
 			var _super = {};
             var _child = new _childClass();
-            var _parent = null;
+
+			_child.__REDEFINE_SCOPE__ = function(name, method) {
+				if (name == '__REDEFINE_SCOPE__') { return; }
+
+				_child[name] = method;;
+
+				if (_child._super) {
+					_child._super.__REDEFINE_SCOPE__(name, method);
+				}
+			};
+
+			for (var i in _child) {
+				if (_child.hasOwnProperty(i)) {
+					if (typeof _child[i] == "function") {
+						if (_parent == null || (_parent != null && !_parent[i])) {
+							_child[i] = (function(_i, childObj) {
+								if (childObj.name == "abstract") {
+									abstractMethods.push(_i);
+									var childObjStr = String(childObj);
+									childObjStr = childObjStr.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
+									if (!/^function abstract\(.*?\)\s*?{\s*?\}/m.test(String(childObjStr))) {
+										throw "Abstract function " + _name + "::" + i + " cannot contain a body";
+									}
+								}
+								return childObj;
+							})(i, _child[i]);
+						}
+						(function(childObj) {
+							childObj.abstract = childObj.name == "abstract";
+							childObj.definedArguments = childObj.length;
+							childObj.className = _name;
+						})(_child[i]);
+					}
+				}
+			}
+
+			var _parent = null;
             if (_parentClass !== _window.js_classes) {
                 _parent = new _parentClass(js_classes.PREVENTCONSTRUCT);
                 for(var i in _parent) {
@@ -56,11 +92,12 @@
 						_super[i] = function(_p) {
 							return _p;
 						}(_parent[i]);
-                        if (!_child[i]) {
+                        if (!_child.hasOwnProperty(i)) {
                             _child[i] = (function(_i, parentObj) {
                                 if (parentObj.abstract) {
                                     abstractMethods.push(_i);
                                 }
+								parentObj.definitonFrom = _parentClass.js_classes.NAME;
                                 return parentObj;
                             })(i, _parent[i]);
                         } else {
@@ -75,40 +112,19 @@
                                 }
 								return childObj;
                             })(i, _child[i], _parent[i]);
-							_parent[i] = _child[i];
+							_parent.__REDEFINE_SCOPE__(i, _child[i]);
                         }
                     }
                 }
             }
 
-            for (var i in _child) {
-                if (_child.hasOwnProperty(i)) {
-                    if (typeof _child[i] == "function") {
-						if (_parent == null || (_parent != null && !_parent[i])) {
-							_child[i] = (function(_i, childObj) {
-								if (childObj.name == "abstract") {
-									abstractMethods.push(_i);
-									var childObjStr = String(childObj);
-									childObjStr = childObjStr.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:[\s;]+\/\/(?:.*)$)/gm, '');
-									if (!/^function abstract\(.*?\)\s*?{\s*?\}/m.test(String(childObjStr))) {
-										throw "Abstract function " + _name + "::" + i + " cannot contain a body";
-									}
-								}
-								childObj.abstract = childObj.name == "abstract";
-								childObj.definedArguments = childObj.length;
-								childObj.className = _name;
-								return childObj;
-							})(i, _child[i]);
-						}
-                    }
-                }
-            }
+			if (!_abstract && abstractMethods.length > 0) {
+				throw "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")";
+			}
 
-			if (_parent) { _child._super = _super }
-
-            if (!_abstract && abstractMethods.length > 0) {
-                throw "Class " + _name + " contains " + abstractMethods.length + " abstract method" + (abstractMethods.length == 1 ? "" : "s") + " and must be declared abstract or have those methods implemented (" + abstractMethods.reverse().toString() + ")";
-            }
+			if (_parent) {
+				_child._super = _super;
+			}
 
             var _this = this;
             _child._instanceOf = function(_Class) {
@@ -119,6 +135,8 @@
                 _child._construct.apply(null, arguments);
                 delete _child._construct;
             }
+
+			_child.__INSTANCE__ = _name;
 
             return _child;
         }
@@ -143,7 +161,8 @@
 		extendedClass.extend = extender;
 		extendedClass.js_classes = {
 			CREATED: new Date(),
-			IDENT: js_classes.IDENT
+			IDENT: js_classes.IDENT,
+			NAME: _name
 		};
 
 		return js_classes;
