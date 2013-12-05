@@ -114,7 +114,7 @@ describe('js_classes javascript class extender', function() {
     it('Should handle abstract classes properly', function() {
         //Check that abstract class cannot be instantiated but the extended class can be
         js_classes.extend('AbstractTestClass', function abstract() {});
-        expect(function() { new AbstractTestClass() }).toThrow('You cannot create an instance of abstract class AbstractTestClass');
+        expect(function() { new AbstractTestClass() }).toThrow('You cannot create an instance of an abstract class AbstractTestClass');
         AbstractTestClass.extend('ExtendedClass', function() {});
         expect(function() { new ExtendedClass() }).not.toThrow();
 
@@ -274,5 +274,59 @@ describe('js_classes javascript class extender', function() {
 		expect(function() { js_classes.extend('MyTestClass.Extended', function() {}); }).toThrow('Cannot redeclare class MyTestClass.Extended');
 		expect(function() { js_classes.extend('SomeOtherClass.Extended', function() {}); }).not.toThrow();
 		expect(function() { js_classes.extend('MyTestClass.Extended.Another', function() {}); }).not.toThrow();
+	});
+
+	it('Should expect a parent method to call the child version of a method if that called method was overriden', function() {
+		var MyTestSpy = jasmine.createSpy('methodA');
+
+		var executeOrder = "";
+
+		js_classes.extend('MyTest', function() {
+			var self;
+
+			return self = {
+				_construct: function() {
+					self.methodExtended();
+				},
+
+				methodExtended: function() {
+					executeOrder += "MyTest";
+				}
+			};
+		});
+
+		MyTest.extend('MyTestExtended', function() {
+			var self;
+
+			return self = {
+				methodExtended: function() {
+					executeOrder += "MyTestExtended-";
+					self._super.methodExtended();
+				},
+
+				middleCall: function() {
+					self.methodExtended();
+				}
+			}
+		});
+
+		MyTestExtended.extend('MyTestSecondExtended', function() {
+			var self;
+
+			return self = {
+				methodExtended: function() {
+					executeOrder += "MyTestSecondExtended-";
+					self._super.methodExtended();
+				}
+			}
+		});
+
+		var instance = new MyTestSecondExtended();
+		expect(executeOrder).toEqual("MyTestSecondExtended-MyTestExtended-MyTest");
+
+		executeOrder = "";
+		instance.middleCall();
+
+		expect(executeOrder).toEqual("MyTestSecondExtended-MyTestExtended-MyTest");
 	});
 });
