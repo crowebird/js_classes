@@ -134,6 +134,7 @@
             if (_child._construct && _preventConstruct !== js_classes.PREVENTCONSTRUCT) {
                 _child._construct.apply(null, arguments);
                 delete _child._construct;
+				delete _child.__REDEFINE_SCOPE__;
             }
 
 			_child.__INSTANCE__ = _name;
