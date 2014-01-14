@@ -99,11 +99,11 @@ Animal.extend('Cat', function() {
   
   return self = {
     _construct: function() {
-      this._super._construct('meow', 'cat');
+      self._super._construct('meow', 'cat');
     },
     
     makeSound: function() {
-      return this._super.makeSound();
+      return self._super.makeSound();
     },
     
     getType: function() {
